@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title>World Chat</title>
+
+	<link type="text/css" rel="stylesheet" href="/css/bootstrap-cerulean.min.css">
+	<link type="text/css" rel="stylesheet" href="/css/worldchat.css">
+	
+	<script charset="utf-8" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script charset="utf-8" src="/js/worldchat.js"></script>
+
+</head>
+<body>
+
+	<div class="navbar navbar-default navbar-fixed-top hidden" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#">World Chat</a>
+			</div>
+			<div class="collapse navbar-collapse">
+				<ul class="nav navbar-nav">
+					<!-- <li class="active"><a href="#">Home</a></li> -->
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+
+		<div class="jumbotron intro">
+			<h1>World Chat</h1>
+			<p>Chat with anyone in the world, regardless of your language difference.</p>
+			<hr>
+			<p class="text-center">To start, choose your language: 
+				<select>
+					<option value="en">English</option>
+					<option value="ru">Russian</option>
+				</select>
+			</p>
+			<p class="text-center">
+				<button class="btn btn-primary btn-lg">Chat now</button>
+			</p>
+		</div>
+
+		
+
+		<div class="row hidden chat-window">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<textarea class="form-control" rows="4" id="input-text"></textarea>
+				</div>
+				<div class="form-group text-right">
+					<button type="submit" class="btn btn-primary" id="btn-send-message">Send</button>
+				</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	
+	<footer class="hidden">
+		<p><strong>World Chat</strong></p>
+		<p>Built by <a href="http://adambailin.com">Adam Bailin</a></p>
+		<p><a href="https://github.com/abailin/worldtweets">Source on Github</a></p>
+	</footer>
+
+<script>
+App.init();
+</script>
+
+</body>
+</html>
