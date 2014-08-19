@@ -5,14 +5,18 @@ try { require('newrelic'); } catch(e) { }
 
 // heroku assigns port randomly, when running locally, port==5000
 var port = process.env.PORT || 5000;
+
 var express = require('express');
 var app = express();
-var io = require('socket.io').listen(app.listen(port));
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+
 var less = require("less-middleware");
 var request = require("request");
 
 // "npm install request" did not install request to package.json ----
 // +++ might need to add request@2.40.0
+// or do "npm install request --save"
 
 var config = {};
 
@@ -32,17 +36,16 @@ var stats = {
 
 
 // set up URL for css files (to be compiled from less on the fly)
-app.configure(function() {
-	app.use(less({
-		dest: __dirname + '/public/css',
-		src: __dirname + '/less',
-		prefix: '/css',
-		compress: true,
-		force: true
-	}));
-	
-	app.use(express.static(__dirname + '/public'));
-});
+app.use(less(__dirname + '/less', {
+	dest: __dirname + '/public',
+	preprocess: {
+		path: function(pathname, req) {
+			return pathname.replace('/css/', '/');
+		}
+	}
+	// ,debug: true,
+}));
+app.use(express.static(__dirname + '/public'));
 
 // URL Routes
 app.get('/', function (req, res) {
@@ -57,10 +60,12 @@ app.get('/css/bootstrap-cerulean.min.css', function(req, res) {
 	res.sendfile(__dirname + "/public/css/bootstrap-cerulean.min.css");
 });
 
+http.listen(port, function() {
+	console.log(' >> Listening on port ' + port);
+});
 
-console.log(' >> Listening on port ' + port);
 
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
 	socket.emit('msg', { message: 'Welcome.' });
 
 	stats.connected_clients++;
