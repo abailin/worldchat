@@ -97,12 +97,18 @@ io.on('connect', function (socket) {
 		var user = updateUser(socket.id, data);
 		displayUsers();
 
+		//
+		// user joins the chat 
+		//
 		if (data.joined) {
 			// broadcast user joined
 			io.emit('joined', {
 				name: user.name,
 				lang: user.lang ? user.lang : null
 			});
+
+			// join the room for their specific language
+			socket.join(user.lang);
 		}
 
 	});
@@ -110,44 +116,57 @@ io.on('connect', function (socket) {
 	// MESSAGE
 	socket.on('msg', function(message) {
 
-		var user = loadUserById(socket.id);
+		var from_user = loadUserById(socket.id);
+		var debug = "> " + from_user.name + ": " + message + " (" + from_user.lang + ")";
+		var languages = getActiveLanguages();
 
-		var debug = "> " + user.name + ": " + message + " (" + user.lang + ")";
+		// no translation when from_lang == target_lang
+		socket.broadcast.to(from_user.lang).emit('msg', {
+			translated: message,
+			from_user: from_user.name,
+			lang_from: from_user.lang,
+			lang_to: from_user.lang
+		});
 		
 
-		// list languages
-		// var url = "https://www.googleapis.com/language/translate/v2/languages?key=" + config.google_api_key;
+		// translate for every other active language
+		_.each( _.without(languages, from_user.lang) , function(target_lang) {
 
-		// translate this message
-		var url = "https://www.googleapis.com/language/translate/v2?key=" + config.google_api_key + "&q=" + message + "&source=en&target=fr";
+			var url = "https://www.googleapis.com/language/translate/v2?key=" + config.google_api_key + "&q=" + message + "&source=" + from_user.lang + "&target=" + target_lang;
 
-		request(url, function(error, response, body) {
-			if (!error && response.statusCode == 200) {
+			request(url, function(error, response, body) {
+				if (!error && response.statusCode == 200)
+				{
+					var translation = JSON.parse(body);
+					var translated = translation.data.translations[0].translatedText;
 
-				var translation = JSON.parse(body);
-				var translated = translation.data.translations[0].translatedText;
+					var this_debug = debug + ' -> ' + translated + " (" + target_lang + ")";
+					console.log(this_debug);
 
-				debug += ' -> ' + translated + " (fr)";
-				console.log(debug);
+					io.to(target_lang).emit('msg', {
+						original: message,
+						translated: translated,
+						lang_from: from_user.lang,
+						lang_to: target_lang,
+						from_user: from_user.name
+					});
+				}
+				else {
+					var error_json = JSON.parse(body);
+					console.log("Error: ", error_json);
+				}
+			});
 
-				socket.broadcast.emit('msg', {
-					original: message,
-					translated: translated,
-					lang_from: "en",
-					lang_to: "fr",
-					from_user: user.name
-				});
-			}
-			else {
-				var error_json = JSON.parse(body);
-				console.log("Error: ", error_json);
-			}
 		});
+
 	});
 
 });
 
-
+function getActiveLanguages()
+{
+	return _.uniq(_.compact(_.pluck(users, "lang")));
+}
 
 function getUsers()
 {
