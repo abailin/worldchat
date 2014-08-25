@@ -1,3 +1,5 @@
+
+
 // +++ attribution for translate API
 // https://developers.google.com/translate/v2/attribution
 
@@ -10,13 +12,9 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
 var less = require("less-middleware");
 var request = require("request");
-
-// "npm install request" did not install request to package.json ----
-// +++ might need to add request@2.40.0
-// or do "npm install request --save"
+var _ = require("underscore");
 
 var config = {};
 
@@ -29,6 +27,7 @@ try {
 	};
 }
 
+var users = [];
 var stats = {
 	connected_clients: 0,
 	time_start: Date.now()
@@ -65,36 +64,151 @@ http.listen(port, function() {
 });
 
 
-io.on('connection', function (socket) {
-	socket.emit('msg', { message: 'Welcome.' });
+
+io.on('connect', function (socket) {
+
+	// CONNECT
+	var user = {id: socket.id};
+	users.push(user);
+
+	displayUsers();
+	socket.emit("users", {users: getUsers()});
 
 	stats.connected_clients++;
 
+	// DISCONNECT
 	socket.on('disconnect', function() {
 		stats.connected_clients--;
+
+		// broadcast user left
+		var user = removeUser(socket.id);
+		if (user.name) {
+			socket.broadcast.emit('left', {
+				name: user.name,
+				lang: user.lang ? user.lang : null
+			});
+		}
+
 	});
 
-	socket.on('lang', function(lang) {
-		console.log("language set as " + lang);
+	// UPDATE USER DATA
+	socket.on('update', function(data) {
+		
+		var user = updateUser(socket.id, data);
+		displayUsers();
+
+		if (data.joined) {
+			// broadcast user joined
+			io.emit('joined', {
+				name: user.name,
+				lang: user.lang ? user.lang : null
+			});
+		}
+
 	});
 
+	// MESSAGE
 	socket.on('msg', function(message) {
-		console.log('"' + message + '"');
+
+		var user = loadUserById(socket.id);
+
+		var debug = "> " + user.name + ": " + message + " (" + user.lang + ")";
+		
 
 		// list languages
 		// var url = "https://www.googleapis.com/language/translate/v2/languages?key=" + config.google_api_key;
 
+		// translate this message
 		var url = "https://www.googleapis.com/language/translate/v2?key=" + config.google_api_key + "&q=" + message + "&source=en&target=fr";
 
 		request(url, function(error, response, body) {
 			if (!error && response.statusCode == 200) {
-				console.log(body);
+
+				var translation = JSON.parse(body);
+				var translated = translation.data.translations[0].translatedText;
+
+				debug += ' -> ' + translated + " (fr)";
+				console.log(debug);
+
+				socket.broadcast.emit('msg', {
+					original: message,
+					translated: translated,
+					lang_from: "en",
+					lang_to: "fr",
+					from_user: user.name
+				});
 			}
 			else {
-				var message = JSON.parse(body);
-				console.log("Error: ", message);
+				var error_json = JSON.parse(body);
+				console.log("Error: ", error_json);
 			}
 		});
 	});
 
 });
+
+
+
+function getUsers()
+{
+	var userlist = [];
+
+	_.each(users, function(user, i) {
+		if (user.name) {
+			userlist.push({
+				name: users[i].name,
+				lang: users[i].lang
+			});
+		}
+	});
+	
+	return userlist;
+}
+
+function removeUser(user_id)
+{
+	for (var i=users.length-1; i >= 0; i--) {
+		var user = users[i];
+
+		if (user.id === user_id) {
+			users.splice(i, 1);
+			return user;
+		}
+	}
+}
+
+function updateUser(user_id, data)
+{
+	for (var i=0; i<users.length; i++) {
+		if (users[i].id === user_id) {
+			if (data.name) {
+				users[i].name = data.name;
+			}
+			if (data.lang) {
+				users[i].lang = data.lang;
+			}
+			return users[i];
+		}
+	}
+}
+
+function loadUserById(user_id) {
+	return _.findWhere(users, {id: user_id});
+}
+
+function displayUsers()
+{
+	console.log("Current user list:");
+	_.each(users, function(user, i) {
+		var debug = user.id;
+		
+		if (user.lang) {
+			debug += " | " + user.lang;
+		}
+		if (user.name) {
+			debug += " | " + user.name;
+		}
+		
+		console.log(" - " + debug);
+	});
+}
