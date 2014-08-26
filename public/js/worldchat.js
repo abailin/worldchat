@@ -62,6 +62,9 @@ var App = {
 				App.selectors.$wrapper_main.removeClass("hidden");
 				App.User.name = App.selectors.$input_name.val();
 				App.User.lang = App.selectors.$language_select.val();
+
+				$(".status-bar .username").text( App.User.name );
+				$(".status-bar .language").text( App.User.lang );
 			}
 			
 		});
@@ -78,6 +81,9 @@ var App = {
 			App.selectors.$wrapper_main.removeClass("hidden");
 			App.User.name = App.selectors.$input_name.val();
 			App.User.lang = App.selectors.$language_select.val();
+
+			$(".status-bar .username").text( App.User.name );
+			$(".status-bar .language").text( App.User.lang );
 		});
 
 

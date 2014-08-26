@@ -62,12 +62,22 @@ body {
 	margin-top: 16px;
 }
 
+.status-bar {
+	.username {
+		font-weight: bold;
+	}
+	.language {
+		font-weight: bold;
+	}
+}
+
 .chat-window {
 	.messages {
 		border: thin solid #C2C2C2;
 		border-bottom:none;
 		height: 400px;
 		overflow: auto;
+		padding: 8px 10px;
 
 		.message {
 			// border: thin solid #c2c2c2;
@@ -95,8 +105,14 @@ body {
 		border: thin solid #C2C2C2;
 		height: 400px;
 		overflow: auto;
+		padding: 8px 10px;
 
-		ul {
+		.title {
+			font-weight: bold;
+		}
+
+		ul.user-list-ul {
+			padding-left: 8px;
 			li {
 				list-style: none;
 			}
