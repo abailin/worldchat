@@ -84,6 +84,7 @@ io.on('connect', function (socket) {
 		var user = removeUser(socket.id);
 		if (user.name) {
 			socket.broadcast.emit('left', {
+				id: user.id,
 				name: user.name,
 				lang: user.lang ? user.lang : null
 			});
@@ -103,6 +104,7 @@ io.on('connect', function (socket) {
 		if (data.joined) {
 			// broadcast user joined
 			io.emit('joined', {
+				id: user.id,
 				name: user.name,
 				lang: user.lang ? user.lang : null
 			});
@@ -176,7 +178,8 @@ function getUsers()
 		if (user.name) {
 			userlist.push({
 				name: users[i].name,
-				lang: users[i].lang
+				lang: users[i].lang,
+				id: users[i].id
 			});
 		}
 	});

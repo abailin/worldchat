@@ -10,6 +10,12 @@ var App = {
 		this.initSocket();
 		this.initUI();
 
+		this.Userlist = new models.UserList();
+		this.UserlistView = new views.UserList({
+			collection: this.Userlist
+		});
+
+		this.UserlistView.render();
 	},
 
 	initUI: function() {
@@ -17,6 +23,7 @@ var App = {
 
 		this.selectors.$intro = $(".intro");
 		this.selectors.$chat_window = $(".chat-window");
+		this.selectors.$wrapper_main = $(".wrapper-main");
 		this.selectors.$input_text = $("#input-text");
 		this.selectors.$btn_send_message = $("#btn-send-message");
 		this.selectors.$language_select = $(".intro select");
@@ -52,7 +59,7 @@ var App = {
 				} );
 
 				App.selectors.$intro.addClass("hidden");
-				App.selectors.$chat_window.removeClass("hidden");
+				App.selectors.$wrapper_main.removeClass("hidden");
 				App.User.name = App.selectors.$input_name.val();
 				App.User.lang = App.selectors.$language_select.val();
 			}
@@ -68,7 +75,7 @@ var App = {
 			} );
 
 			App.selectors.$intro.addClass("hidden");
-			App.selectors.$chat_window.removeClass("hidden");
+			App.selectors.$wrapper_main.removeClass("hidden");
 			App.User.name = App.selectors.$input_name.val();
 			App.User.lang = App.selectors.$language_select.val();
 		});
@@ -103,15 +110,25 @@ var App = {
 		this.socket.on("joined", function(user) {
 			console.log("JOINED", user);
 			App.displayUserJoined(user);
+			
+			var u = new models.User({name: user.name, lang: user.lang, id: user.id});
+			App.Userlist.add(u);
 		});
 
 		this.socket.on("left", function(user) {
 			console.log("LEFT", user);
 			App.displayUserLeft(user);
+			App.Userlist.remove(App.Userlist.get(user.id));
 		});
 
 		this.socket.on("users", function(data) {
 			console.log("USERS", data);
+			if (data.users.length) {
+				_.each(data.users, function(user) {
+					var u = new models.User({name: user.name, lang: user.lang, id: user.id});
+					App.Userlist.add(u);
+				});
+			}
 		});
 	},
 

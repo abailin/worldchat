@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
-	<title>World Chat</title>
+	<title>Chat Without Borders</title>
 
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap-cerulean.min.css">
 	<link type="text/css" rel="stylesheet" href="/css/worldchat.css">
@@ -10,6 +10,7 @@
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script charset="utf-8" src="/js/jquery-1.9.0.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	<script charset="utf-8" src="/js/plugins.js"></script>
 	<script charset="utf-8" src="/js/worldchat.js"></script>
 	
@@ -39,13 +40,17 @@
 	<div class="container">
 
 		<div class="jumbotron intro">
-			<h1>World Chat</h1>
+			<h1>Chat Without Borders</h1>
+			<h2>Discuter sans frontières</h2>
+			<h3>Ngobrol tanpa batas</h3>
+			<h4>Чат без границ</h4>
 			<p>Chat with anyone in the world, regardless of your language difference.</p>
 			<hr>
 			<p class="text-center">To start, choose your language: 
 				<select>
 					<option value="en">English</option>
 					<option value="ru">Russian</option>
+					<option value="fr">French</option>
 				</select>
 			</p>
 			
@@ -62,21 +67,57 @@
 			</div>
 		</div>
 
-		
+		<div class="row top-row">
+		</div>
 
-		<div class="row chat-window">
-			<div class="col-xs-12">
-				<div class="messages">
-					
+		<div class="row wrapper-main hidden">
+
+			<div class="col-xs-12 col-sm-9">
+
+				<div class="row chat-window">
+					<div class="col-xs-12">
+						
+						<!-- holds all messages -->
+						<div class="messages"></div>
+
+						<!-- chat input -->
+						<div class="form-group">
+							<textarea class="form-control" rows="2" id="input-text"></textarea>
+						</div>
+
+						<!-- send button -->
+						<div class="form-group text-right">
+							<button type="submit" class="btn btn-primary" id="btn-send-message">Send</button>
+						</div>
+
+					</div>
 				</div>
-				<div class="form-group">
-					<textarea class="form-control" rows="2" id="input-text"></textarea>
-				</div>
-				<div class="form-group text-right">
-					<button type="submit" class="btn btn-primary" id="btn-send-message">Send</button>
+
+
+			</div>
+
+			<div class="col-xs-12 col-sm-3">
+				<div class="row side-col">
+					<div class="col-xs-12">
+						<div class="users-list">
+							<ul class="user-list-ul"></ul>
+						</div>
+						
+						<div class="google-attribution">
+							<a href="http://translate.google.com" target="_blank">
+								<img src="/images/google-translate.png">
+							</a>
+						</div>
+
+					</div>
 				</div>
 			</div>
+
 		</div>
+
+		
+
+		
 
 	</div>
 	
@@ -85,6 +126,24 @@
 		<p>Built by <a href="http://adambailin.com">Adam Bailin</a></p>
 		<p><a href="https://github.com/abailin/worldtweets">Source on Github</a></p>
 	</footer>
+
+<div class="modal" id="modal-about">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title"><strong>About</strong></h4>
+      </div>
+      <div class="modal-body">
+        <p>Chat without borders is a chatroom which allows users to communicate regardless of the language they write. After choosing your language and joining the chat, all incoming messages are automatically translated into your preferred language.</p>
+        <p>Translations are powered by <a href="#">Google Translate</a>.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Get started</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script type="text/html" id="tmpl-message-line">
 <div class="message">
@@ -108,8 +167,77 @@
 
 <script type="text/html" id="tmpl-message-user-joined">
 <div class="message user-joined">
-	<%= o.name %> has joined
+	<%= o.name %> [<%= o.lang %>] has joined
 </div>
+</script>
+
+
+
+<script>
+var models = {};
+
+models.User = Backbone.Model.extend({
+	defaults: {
+		id: null,
+		name: null,
+		lang: null
+	},
+	initialize: function() {
+		console.log("user initialized");
+	}
+});
+
+models.UserList = Backbone.Collection.extend({
+	model: models.User
+});
+
+var views = {};
+
+views.UserItem = Backbone.View.extend({
+	tagName: "li",
+	className: "user-list-item",
+	
+	initialize: function() {
+		console.log("Render UserItem (view)");
+	},
+	render: function() {
+		this.el.innerHTML = this.model.get('name') + " [" + this.model.get('lang') + "]";
+		return this;
+	}
+});
+
+views.UserList = Backbone.View.extend({
+	el: ".user-list-ul",
+	collection: null,
+	
+	initialize: function(options) {
+		this.collection = options.collection;
+		_.bindAll(this, 'render');
+		// this.collection.on('add', this.render, this);
+		this.collection.on('add', this.render);
+		this.collection.on('remove', this.render);
+		this.collection.on('reset', this.render);
+	},
+
+	render: function() {
+		console.log("Render MAIN UserList (view)");
+		var element = $(this.el);
+		element.empty();
+
+		this.collection.forEach(function(item) {
+			var itemView = new views.UserItem({
+				model: item
+			});
+
+			element.append(itemView.render().el);
+		});
+	}
+});
+
+
+
+
+
 </script>
 
 <script>
