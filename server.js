@@ -27,6 +27,11 @@ try {
 	};
 }
 
+if (!config.google_api_key) {
+	console.log(" -> Google API key not defined!");
+	process.exit(1);
+}
+
 var users = [];
 var stats = {
 	connected_clients: 0,
