@@ -20,7 +20,6 @@ var App = {
 
 	initUI: function() {
 
-
 		this.selectors.$intro = $(".intro");
 		this.selectors.$chat_window = $(".chat-window");
 		this.selectors.$wrapper_main = $(".wrapper-main");
@@ -29,7 +28,11 @@ var App = {
 		this.selectors.$language_select = $(".intro select");
 		this.selectors.$input_name = $(".input-username");
 		this.selectors.$messages = $(".messages");
-		this.selectors.$btn_chat_now = $(".btn-chat-now");
+		this.selectors.$btn_start = $(".btn-start");
+
+
+		// focus name
+		$(".form-group-name input").focus();
 
 		// click "send message"
 		this.selectors.$btn_send_message.on("click", function(e) {
@@ -49,44 +52,38 @@ var App = {
 
 		// [enter] in username field
 		this.selectors.$input_name.on("keypress", function(e) {
-			
 			if (e.which == 13 && !e.shiftKey) {
-
-				App.sendUpdate( {
-					lang: App.selectors.$language_select.val(),
-					name: App.selectors.$input_name.val(),
-					joined: 1
-				} );
-
-				App.selectors.$intro.addClass("hidden");
-				App.selectors.$wrapper_main.removeClass("hidden");
-				App.User.name = App.selectors.$input_name.val();
-				App.User.lang = App.selectors.$language_select.val();
-
-				$(".status-bar .username").text( App.User.name );
-				$(".status-bar .language").text( App.User.lang );
+				App.sendJoinedPacket(App.selectors.$input_name.val(), App.selectors.$language_select.val());
+				App.showChatWindow();
 			}
-			
 		});
 
 		// click "chat now"
-		this.selectors.$btn_chat_now.on("click", function(e) {
-			App.sendUpdate( {
-				lang: App.selectors.$language_select.val(),
-				name: App.selectors.$input_name.val(),
-				joined: 1
-			} );
-
-			App.selectors.$intro.addClass("hidden");
-			App.selectors.$wrapper_main.removeClass("hidden");
-			App.User.name = App.selectors.$input_name.val();
-			App.User.lang = App.selectors.$language_select.val();
-
-			$(".status-bar .username").text( App.User.name );
-			$(".status-bar .language").text( App.User.lang );
+		this.selectors.$btn_start.on("click", function(e) {
+			App.sendJoinedPacket(App.selectors.$input_name.val(), App.selectors.$language_select.val());
+			App.showChatWindow();
 		});
 
+	},
 
+	showChatWindow: function() {
+		App.selectors.$intro.addClass("hidden");
+		App.selectors.$wrapper_main.removeClass("hidden");
+
+		$(".status-bar .username").text( App.User.name );
+		$(".status-bar .language").text( App.User.lang );
+	},
+
+	sendJoinedPacket: function(name, language) {
+
+		App.User.name = name;
+		App.User.lang = language;
+
+		App.sendUpdate( {
+			lang: language,
+			name: name,
+			joined: 1
+		} );
 	},
 
 	initSocket: function() {

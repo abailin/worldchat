@@ -5,8 +5,8 @@
 
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap-cerulean.min.css">
 	<link type="text/css" rel="stylesheet" href="/css/worldchat.css">
-	
-	<!-- // <script charset="utf-8" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
+	<link type="text/css" rel="stylesheet" href="/css/flags/flags.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script charset="utf-8" src="/js/jquery-1.9.0.min.js"></script>
@@ -37,38 +37,75 @@
 		</div>
 	</div>
 
-	<div class="container">
+	<section>
+		<div class="jumbotron intro text-center">
+			<h1>Chat Without Borders <span class="label label-primary" style="font-size:0.3em;vertical-align:top;">beta</span></h1>
+			<div class="flag-strip">
 
-		<div class="jumbotron intro">
-			<h1>Chat Without Borders</h1>
-			<h2>Discuter sans frontières</h2>
-			<h3>Ngobrol tanpa batas</h3>
-			<h4>Чат без границ</h4>
-			<p>Chat with anyone in the world, regardless of your language difference.</p>
+				<span class="flag flag-no"></span>
+				<span class="flag flag-fr"></span>
+				<span class="flag flag-de"></span>
+				<span class="flag flag-jp"></span>
+				<span class="flag flag-bg"></span>
+				<span class="flag flag-fi"></span>
+				<span class="flag flag-lv"></span>
+				<span class="flag flag-ch"></span>
+				<span class="flag flag-at"></span>
+				<span class="flag flag-au"></span>
+				<span class="flag flag-kr"></span>
+				<span class="flag flag-il"></span>
+				<span class="flag flag-pe"></span>
+				<span class="flag flag-cn"></span>
+				<span class="flag flag-br"></span>
+				<span class="flag flag-mo"></span>
+				<span class="flag flag-th"></span>
+				<span class="flag flag-fj"></span>
+				<span class="flag flag-se"></span>
+				<span class="flag flag-gr"></span>
+				<span class="flag flag-ht"></span>
+				<span class="flag flag-lk"></span>
+				<span class="flag flag-vn"></span>
+				<span class="flag flag-bs"></span>
+				<span class="flag flag-ir"></span>
+				<span class="flag flag-dz"></span>
+				<span class="flag flag-eg"></span>
+				<span class="flag flag-et"></span>
+				<span class="flag flag-sr"></span>
+				<span class="flag flag-ve"></span>
+				<span class="flag flag-ye"></span>
+				<span class="flag flag-pw"></span>
+
+			</div>
+			<p class="lead">Chat with anyone in the world, regardless of your language difference.</p>
 			<hr>
-			<p class="text-center">To start, choose your language: 
-				<select>
-					<option value="en">English</option>
-					<option value="ru">Russian</option>
-					<option value="fr">French</option>
-				</select>
-			</p>
-			
-			<div class="choose-username">
-				<span class="text">And your name: </span>
-				<span class="input">
-					<input type="text" class="form-control input-username">
-				</span>
-				<div style="clear:both;"></div>
-			</div>
+			<form class="form-inline form-login">
+				<div class="row">
+					<div class="form-group col-xs-12 col-sm-6 form-group-name">
+						<label for="input-name">Name</label>
+						<input type="text" class="form-control input-username" id="input-name" required>
+					</div>
+					<div class="form-group col-xs-12 col-sm-6 form-group-language">
+						<label for="input-language">Language</label>
+						<select id="input-language" class="form-control">
+							<option value="en">English</option>
+							<option value="ru">Russian</option>
+							<option value="fr">French</option>
+						</select>
+					</div>
+				</div>
 
-			<div class="text-center button-chat">
-				<button class="btn btn-primary btn-lg btn-chat-now">Chat now</button>
-			</div>
+				<div class="row form-group-submit">
+					<button type="submit" class="btn btn-primary btn-lg btn-block btn-start">
+						<i class="fa fa-globe"></i> enter
+					</button> 
+				</div>
+
+			</form>
 		</div>
+	</section>
 
+	<div class="container">
 		
-
 		<div class="row wrapper-main hidden">
 
 			<div class="col-xs-12">
@@ -130,7 +167,7 @@
 
 	</div>
 	
-	<footer class="hidden">
+	<footer class="">
 		<p><strong>World Chat</strong></p>
 		<p>Built by <a href="http://adambailin.com">Adam Bailin</a></p>
 		<p><a href="https://github.com/abailin/worldtweets">Source on Github</a></p>
@@ -243,14 +280,15 @@ views.UserList = Backbone.View.extend({
 	}
 });
 
-
-
-
-
 </script>
 
 <script>
 App.init();
+$(".form-login").on("submit", function(e) { e.preventDefault(); });
+/*
+Attribution
+flags from: https://www.flag-sprites.com/
+*/
 </script>
 
 </body>

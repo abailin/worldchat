@@ -7,11 +7,15 @@
   },
   "dependencies": {
     "express": "4.3.1",
+    "iconv-lite": "^0.4.10",
     "less-middleware": "1.0.3",
+    "mysql": "^2.7.0",
     "newrelic": "^1.10.2",
+    "querystring": "^0.2.0",
     "request": "^2.40.0",
     "socket.io": "1.0.6",
-    "underscore": "^1.6.0"
+    "underscore": "^1.6.0",
+    "underscore.string": "^3.1.1"
   },
   "engines": {
     "node": "0.10.x",

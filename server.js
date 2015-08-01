@@ -15,6 +15,11 @@ var io = require('socket.io')(http);
 var less = require("less-middleware");
 var request = require("request");
 var _ = require("underscore");
+_.str = require("underscore.string");
+var _mysql = require("mysql");
+
+var Translate = require('./lib/translate.js')
+var translate = new Translate();
 
 var config = {};
 
@@ -31,6 +36,44 @@ if (!config.google_api_key) {
 	console.log(" -> Google API key not defined!");
 	process.exit(1);
 }
+if (!config.mysql) {
+	console.log(" -> MySQL credentials not defined!");
+	process.exit(1);
+}
+
+translate.setGoogleApiKey(config.google_api_key);
+
+mysql = null;
+
+function connect_mysql()
+{
+	mysql = _mysql.createConnection(config.mysql);
+
+	mysql.connect(function(err) {
+		if (err) {
+			console.log('Could not connect to MySQL database!');
+			return;
+		}
+
+		console.log('Connected to MySQL database as ' + mysql.threadId);
+	});
+
+	mysql.on('error', function(err) {
+		if (err.code == 'PROTOCOL_CONNECTION_LOST') {
+			console.log('- mysql lost connection, reconecting...');
+
+			connect_mysql();
+		}
+		else {
+			console.log('- unknown mysql error: ');
+			console.log(err);
+		}
+	});
+
+}
+
+connect_mysql();
+
 
 var users = [];
 var stats = {
@@ -86,6 +129,7 @@ io.on('connect', function (socket) {
 		stats.connected_clients--;
 
 		// broadcast user left
+		// chatroom.userLeft()
 		var user = removeUser(socket.id);
 		if (user.name) {
 			socket.broadcast.emit('left', {
@@ -108,6 +152,7 @@ io.on('connect', function (socket) {
 		//
 		if (data.joined) {
 			// broadcast user joined
+			// chatroom.userJoined()
 			io.emit('joined', {
 				id: user.id,
 				name: user.name,
@@ -139,29 +184,32 @@ io.on('connect', function (socket) {
 		// translate for every other active language
 		_.each( _.without(languages, from_user.lang) , function(target_lang) {
 
-			var url = "https://www.googleapis.com/language/translate/v2?key=" + config.google_api_key + "&q=" + message + "&source=" + from_user.lang + "&target=" + target_lang;
+			translate.translate({
+				text: message,
+				source: from_user.lang,
+				target: target_lang
+			}, function(translation, error) {
 
-			request(url, function(error, response, body) {
-				if (!error && response.statusCode == 200)
+				if (error) {
+					console.log("TranslationError: " + error);
+				}
+				else
 				{
-					var translation = JSON.parse(body);
-					var translated = translation.data.translations[0].translatedText;
-
-					var this_debug = debug + ' -> ' + translated + " (" + target_lang + ")";
+					// debug
+					var this_debug = debug + ' -> ' + translation + " (" + target_lang + ")";
 					console.log(this_debug);
 
+					// send data
+					// chatroom.sendMessage()
 					io.to(target_lang).emit('msg', {
 						original: message,
-						translated: translated,
+						translated: translation,
 						lang_from: from_user.lang,
 						lang_to: target_lang,
 						from_user: from_user.name
 					});
 				}
-				else {
-					var error_json = JSON.parse(body);
-					console.log("Error: ", error_json);
-				}
+				
 			});
 
 		});

@@ -1,20 +1,6 @@
 body {
-	padding-top: 60px;
+	padding-top: 20px;
 }
-
-/*.choose-language {
-	select {
-
-		// line-height: 2em;
-		// font-size: 2em;
-		margin: 1em;
-		// padding:1em;
-
-		option {
-
-		}
-	}
-}*/
 
 @responsive_width: 480px;
 
@@ -24,6 +10,7 @@ body {
 	h1 {
 		color: @grey;
 		margin-bottom: 0;
+		margin-top: 0;
 	}
 	h2 {
 		color: #666;
@@ -41,6 +28,46 @@ body {
 		margin: 0;
 		margin-left: 10px;
 		margin-bottom: 14px;
+	}
+
+	.flag-strip {
+		.flag {
+			display: inline-block;
+		}
+	}
+
+	form {
+		max-width: 640px;
+		margin-left: auto;
+		margin-right: auto;
+			
+		.form-group-name {
+			label {
+				padding-right: 16px;
+			}
+			input {
+				min-width: 69%;
+			}
+		}
+
+		.form-group-language {
+			label {
+				padding-right: 16px;
+			}
+			select {
+				min-width: 69%;
+			}
+		}
+		.form-group-submit {
+			margin-top: 30px;
+			button {
+				font-size: 1.75em;
+				font-weight: 600;
+				width: 70%;
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
 	}
 }
 
