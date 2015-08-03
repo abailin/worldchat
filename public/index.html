@@ -6,7 +6,7 @@
 	<link type="text/css" rel="stylesheet" href="/css/bootstrap-cerulean.min.css">
 	<link type="text/css" rel="stylesheet" href="/css/worldchat.css">
 	<link type="text/css" rel="stylesheet" href="/css/flags/flags.css">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">
 
 	<script src="/socket.io/socket.io.js"></script>
 	<script charset="utf-8" src="/js/jquery-1.9.0.min.js"></script>
@@ -152,11 +152,7 @@
 							<ul class="user-list-ul"></ul>
 						</div>
 						
-						<div class="google-attribution">
-							<a href="http://translate.google.com" target="_blank">
-								<img src="/images/google-translate.png">
-							</a>
-						</div>
+						
 
 					</div>
 				</div>
@@ -171,9 +167,26 @@
 	</div>
 	
 	<footer class="">
-		<p><strong>World Chat</strong></p>
-		<p>Built by <a href="http://adambailin.com">Adam Bailin</a></p>
-		<p><a href="https://github.com/abailin/worldtweets">Source on Github</a></p>
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-sm-6  col-sm-offset-3">
+					<div><strong>Chat Without Borders</strong></div>
+					<div>Built by <a href="http://adambailin.com" target="_blank">Adam Bailin</a></div>
+					<div>
+						<a class="btn btn-sm btn-default" href="https://github.com/abailin/" target="_blank">
+							<i class="fa fa-code-fork"></i> Source code available on Github
+						</a>
+					</div>
+				</div>
+				<div class="col-xs-12 col-sm-3">
+					<div class="google-attribution text-center">
+						<a href="http://translate.google.com" target="_blank">
+							<img src="/images/google-translate.png">
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</footer>
 
 <div class="modal" id="modal-about">
