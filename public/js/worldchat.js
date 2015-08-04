@@ -28,6 +28,7 @@ var App = {
 		this.selectors.$language_select = $(".intro select");
 		this.selectors.$input_name = $(".input-username");
 		this.selectors.$messages = $(".messages");
+		this.selectors.$message_container = $(".message-container");
 		this.selectors.$btn_start = $(".btn-start");
 
 

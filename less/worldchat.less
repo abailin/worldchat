@@ -210,9 +210,38 @@ body {
 				border: thin solid black;
 				background-color: white;
 				border-right: none;
+				border-bottom: none;
+				border-top: none;
+				padding: 8px 10px;
+
+				.messages {
+					
+					height: 500px;
+					overflow-y: scroll;
+					overflow-x: hidden;
+					white-space: nowrap;
+
+
+					.message {
+						.username {
+							font-weight: bold;
+						}
+						.message-body {
+							.translation {
+
+							}
+							.original {
+								font-style: italic;
+								color: #bbb;
+							}
+						}
+					}
+				}
 			}
 			.user-list {
 				border: thin solid black;
+				border-top: none;
+				border-bottom: none;
 				display: table-cell;
 				width: @userListWidth;
 				background-color: #f5f5f5;
@@ -230,7 +259,6 @@ body {
 					}
 				}
 			}
-
 		}
 	}
 	

@@ -115,7 +115,9 @@
 
 		<div class="table-wrap">
 			<div class="zrow">
+
 				<div class="message-container">
+					<div class="messages"></div>
 				</div>
 
 				<div class="user-list">
@@ -201,7 +203,7 @@
 	</section>
 
 
-	<div class="container">
+	<!-- <div class="container">
 		<div class="row wrapper-main hidden">
 
 			<div class="col-xs-12">
@@ -218,15 +220,12 @@
 				<div class="row chat-window">
 					<div class="col-xs-12">
 						
-						<!-- holds all messages -->
 						<div class="messages"></div>
 
-						<!-- chat input -->
 						<div class="form-group">
 							<textarea class="form-control" rows="2" id="input-text"></textarea>
 						</div>
 
-						<!-- send button -->
 						<div class="form-group text-right">
 							<button type="submit" class="btn btn-primary" id="btn-send-message">Send</button>
 						</div>
@@ -245,7 +244,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
+	</div> -->
 	
 	<footer class="">
 		<div class="container">
@@ -386,6 +385,20 @@ $(".form-login").on("submit", function(e) { e.preventDefault(); });
 Attribution
 flags from: https://www.flag-sprites.com/
 */
+
+var $messages = $(".message-container");
+for (var i=0; i<100; i++) {
+	setTimeout(function() {
+		var r = parseInt(Math.random()*10);
+		App.addMessageToConversation({
+			from_user: "adam",
+			message: "Hello! " + r,
+			original: "bonjour!"
+		});
+	}, 10);
+	
+}
+
 </script>
 
 </body>
