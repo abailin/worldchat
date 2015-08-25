@@ -55,24 +55,16 @@ var App = {
 		this.selectors.$input_name.on("keypress", function(e) {
 			if (e.which == 13 && !e.shiftKey) {
 				App.sendJoinedPacket(App.selectors.$input_name.val(), App.selectors.$language_select.val());
-				App.showChatWindow();
+				App.showChatroom();
 			}
 		});
 
 		// click "chat now"
 		this.selectors.$btn_start.on("click", function(e) {
 			App.sendJoinedPacket(App.selectors.$input_name.val(), App.selectors.$language_select.val());
-			App.showChatWindow();
+			App.UI.showChatroom();
 		});
 
-	},
-
-	showChatWindow: function() {
-		App.selectors.$intro.addClass("hidden");
-		App.selectors.$wrapper_main.removeClass("hidden");
-
-		$(".status-bar .username").text( App.User.name );
-		$(".status-bar .language").text( App.User.lang );
 	},
 
 	sendJoinedPacket: function(name, language) {
@@ -184,3 +176,11 @@ var App = {
 	}
 };
 
+App.UI = {
+	showChatroom: function() {
+		$(".chatroom-container").show();
+		$(".heading-small").show();
+		$(".heading-main").hide();
+
+	}
+};

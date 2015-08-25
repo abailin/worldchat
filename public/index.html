@@ -37,7 +37,7 @@
 		</div>
 	</div>
 
-	<section>
+	<section class="heading-main">
 		<div class="jumbotron intro text-center">
 			<h1>
 				Chat Without Borders
@@ -107,10 +107,56 @@
 		</div>
 	</section>
 
-	<section class="chat-container">
+	<section class="heading-small" style="display:none;">
+		<div class="jumbotron intro small-intro text-center">
+			<h1>
+				Chat Without Borders
+				<span class="label label-primary beta-label">beta</span>
+			</h1>
+			<div class="flag-strip">
+
+				<span class="flag flag-no"></span>
+				<span class="flag flag-fr"></span>
+				<span class="flag flag-de"></span>
+				<span class="flag flag-jp"></span>
+				<span class="flag flag-bg"></span>
+				<span class="flag flag-fi"></span>
+				<span class="flag flag-lv"></span>
+				<span class="flag flag-ch"></span>
+				<span class="flag flag-at"></span>
+				<span class="flag flag-au"></span>
+				<span class="flag flag-kr"></span>
+				<span class="flag flag-il"></span>
+				<span class="flag flag-pe"></span>
+				<span class="flag flag-cn"></span>
+				<span class="flag flag-br"></span>
+				<span class="flag flag-mo"></span>
+				<span class="flag flag-th"></span>
+				<span class="flag flag-fj"></span>
+				<span class="flag flag-se"></span>
+				<span class="flag flag-gr"></span>
+				<span class="flag flag-ht"></span>
+				<span class="flag flag-lk"></span>
+				<span class="flag flag-vn"></span>
+				<span class="flag flag-bs"></span>
+				<span class="flag flag-ir"></span>
+				<span class="flag flag-dz"></span>
+				<span class="flag flag-eg"></span>
+				<span class="flag flag-et"></span>
+				<span class="flag flag-sr"></span>
+				<span class="flag flag-ve"></span>
+				<span class="flag flag-ye"></span>
+				<span class="flag flag-pw"></span>
+			</div>
+
+			
+		</div>
+	</section>
+
+	<section class="chatroom-container" style="display:none;">
 
 		<div class="top-line">
-			top line
+			Users connected: 10, different languages: 7
 		</div>
 
 		<div class="table-wrap">
@@ -122,9 +168,9 @@
 
 				<div class="user-list">
 					<div class="user-list-wrap">
-						<h4>Users</h4>
+						<div class="user-list-heading">Users</div>
 						<ul>
-							<li>user1</li>
+							<li>user1 <span class="flag flag-bg"></span></li>
 							<li>user1</li>
 							<li>user1</li>
 							<li>user1</li>
@@ -380,6 +426,7 @@ views.UserList = Backbone.View.extend({
 
 <script>
 App.init();
+App.UI.showChatroom();
 $(".form-login").on("submit", function(e) { e.preventDefault(); });
 /*
 Attribution

@@ -80,6 +80,12 @@ body {
 			}
 		}
 	}
+
+	&.small-intro {
+		h1 {
+			font-size: 3em;
+		}
+	}
 }
 
 .choose-username {
@@ -187,7 +193,7 @@ body {
 @userListWidth: 180px;
 @chatWindowHeight: 500px;
 
-.chat-container {
+.chatroom-container {
 
 	
 	// width: 100%;
@@ -212,14 +218,15 @@ body {
 				border-right: none;
 				border-bottom: none;
 				border-top: none;
-				padding: 8px 10px;
+				padding: 0;
+				overflow-y: scroll;
 
 				.messages {
 					
 					height: 500px;
-					overflow-y: scroll;
 					overflow-x: hidden;
 					white-space: nowrap;
+					padding: 6px 0 0 3px;
 
 
 					.message {
@@ -252,7 +259,10 @@ body {
 					overflow-y: scroll;
 					overflow-x: hidden;
 					white-space: nowrap;
-
+					.user-list-heading {
+						display: none;
+						font-weight: bold;
+					}
 					ul {
 						list-style: none;
 						padding: 0 0 0 4px;
